@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.HfAdminDao">
+    <resultMap type="com.collabor.Entity.HfAdmin" id="HfAdminResultMap">
+        <result property="admin_id" column="admin_id"/>  <!-- 主键 -->
+        <result property="admin_name" column="admin_name"/>    <!-- 管理员用户名 -->
+        <result property="admin_password" column="admin_password"/>  <!-- 管理员密码 -->
+    </resultMap>
+    <!--  List<HfAdmin> findAllAdmins();  查询所有管理员。 -->
+    <select id="findAllAdmins" resultMap="HfAdminResultMap">
+        select admin_id,admin_name,admin_password
+        from hf_admin
+        order by admin_id desc
+    </select>
+
+    <select id="selectAdmin" parameterType="com.collabor.Entity.HfAdmin" resultMap="HfAdminResultMap">
+        select
+        admin_id,admin_name,admin_password
+        from hf_admin
+        <where>
+            <if test="admin_id!=null and admin_id!=''">
+                admin_id=#{admin_id}
+            </if>
+            <if test="admin_name!=null and admin_name!=''">
+                and admin_name = #{admin_name}
+            </if>
+            <if test="admin_password!=null and admin_password!=''">
+                and admin_password = #{admin_password}
+            </if>
+        </where>
+        order by admin_id desc
+    </select>
+</mapper>

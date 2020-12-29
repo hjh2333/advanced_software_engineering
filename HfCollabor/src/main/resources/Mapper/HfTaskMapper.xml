@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.HfTaskDao">
+    <resultMap type="com.collabor.Entity.HfTask" id="HfTaskResultMap">
+        <result property="task_id" column="task_id"/>  <!-- 主键 -->
+        <result property="task_status" column="task_status"/>    <!-- 状态 -->
+        <result property="factory_id" column="factory_id"/>  <!-- 外键 家庭工厂 -->
+        <result property="order_id" column="order_id"/>       <!-- 外键 订单 -->
+        <result property="product_id" column="product_id"/>   <!-- 外键 产品 -->
+        <result property="num" column="num"/>  <!-- 产品数量 -->
+        <result property="create_time" column="create_time"/>    <!-- 创建时间 -->
+        <result property="predict_time" column="predict_time"/>  <!-- 预测完成时间 -->
+        <result property="complete_time" column="complete_time"/>    <!-- 实际完成时间 -->
+        <result property="completed_quantity" column="completed_quantity"/>    <!-- 状已完成数量 -->
+    </resultMap>
+    <sql id ="Base_Column_List">
+        task_id,task_status,factory_id,order_id,product_id,num,create_time,predict_time,complete_time,completed_quantity
+    </sql>
+    <!--  List<HfTask> findAllTasks(); 查询所有任务。 -->
+    <select id="findAllTasks" resultMap="HfTaskResultMap">
+        select <include refid="Base_Column_List" />
+        from task
+        order by task_id desc
+    <!-- select task_id,task_status,order_id,product_id,num,completed_quantity from task
+    order by task_id descc-->
+    </select>
+    <!-- List<HfTask> searchTaskByFactoryId(int factoryId);给定factoryId，查询所有Task  -->
+    <select id="searchTaskByFactoryId"  parameterType="int" resultMap="HfTaskResultMap">
+        select task_id,task_status,factory_id,order_id,product_id,num,create_time,predict_time,complete_time,completed_quantity from task
+            where factory_id = #{factory_id}
+    </select>
+    <!-- 给定factoryId 和 taskStatus，查询所有Task
+             List<HfTask> searchTaskByFactoryStatus(int factoryId,String taskStatus);
+        多个参数时，如果Dao不用@Param注解，Mapper里的取名使用参数名称。
+        用参数名factoryId，不用 factory_id
+    -->
+    <select id="searchTaskByFactoryStatus"  resultMap="HfTaskResultMap">
+        select task_id,task_status,factory_id,order_id,product_id,num,create_time,predict_time,complete_time,completed_quantity from task
+        where factory_id = #{factoryId} and task_status = #{taskStatus}
+    </select>
+
+    <!-- HfTask searchTaskById(int taskId);查询对应id的任务 -->
+    <select id="searchTaskById"  parameterType="int" resultType="com.collabor.Entity.HfTask">
+        select task_id,task_status,factory_id,order_id,product_id,num,create_time,predict_time,complete_time,completed_quantity from task
+        where task_id = #{taskId}
+    </select>
+    <!--  插入一条记录。注意id号自动生成。  -->
+    <!--  在HfTaskController中，当factoryId为null时，设为了0；而数据库中factory_id不能为0，只能null
+          这里重新转换过来。-->
+    <insert id="insertTask" parameterType="com.collabor.Entity.HfTask">
+    insert into task(task_status,factory_id,order_id,product_id,num,create_time,predict_time,complete_time,completed_quantity)
+        values(#{task_status},
+        <choose>
+            <when test="factory_id!=0">   <!-- 字符串中不用#{}的形式-->
+                #{factory_id},
+            </when>
+            <otherwise>
+                null,
+            </otherwise>
+        </choose>
+        #{order_id},#{product_id},#{num},#{create_time},#{predict_time},#{complete_time},#{completed_quantity})
+    </insert>
+    <!--  int updateTaskStatus(int id,String status);  依据id，修改status  -->
+    <update id="updateTaskStatus" >
+        update   task
+        set
+        task_status = #{taskStatus}
+        where task_id=#{taskId}
+    </update>
+    <!--  int deleteTask(int id); 依据id，s删除该任务。
+          注意： HfTaskDao里用了@Param(value="taskId")注解 -->
+    <delete id="deleteTask" parameterType="int">
+        delete from task where task_id=#{taskId}
+    </delete>
+
+</mapper>

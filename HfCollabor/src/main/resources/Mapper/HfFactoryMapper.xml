@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.HfFactoryDao">
+    <resultMap type="com.collabor.Entity.HfFactory" id="HfFactoryResultMap">
+        <result property="factory_id" column="factory_id"/>  <!-- 主键 -->
+        <result property="factory_name" column="factory_name"/>    <!-- 家庭工厂用户名 -->
+        <result property="factory_password" column="factory_password"/>  <!-- 家庭工厂密码 -->
+        <result property="score" column="score"/>  <!-- 家庭工厂权重 -->
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        factory_id,factory_name,factory_password,score
+    </sql>
+    <!--  List<HfFactory> findAllFactory();  查询所有家庭工厂。 -->
+    <select id="findAllFactory" resultMap="HfFactoryResultMap">
+        select  <include refid="Base_Column_List"/>
+        from factory
+        order by factory_id desc
+    </select>
+
+    <select id="login" resultMap="HfFactoryResultMap">
+        select <include refid="Base_Column_List"/>
+        from factory
+        where factory_name= #{factoryName} and factory_password= #{factoryPassword}
+        order by factory_id desc
+    </select>
+</mapper>

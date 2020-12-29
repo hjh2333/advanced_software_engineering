@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.HfOrderItemDao">
+    <resultMap type="com.collabor.Entity.HfOrderItem" id="HfOrderItemResultMap">
+        <result property="order_item_id" column="order_item_id"/>  <!-- 主键 -->
+        <result property="order_id" column="order_id"/>    <!-- 管理员用户名 -->
+        <result property="product_id" column="product_id"/>  <!-- 管理员密码 -->
+        <result property="product_sum" column="product_sum"/>  <!-- 管理员密码 -->
+    </resultMap>
+    <sql id="Base_Column_List">
+        order_item_id,order_id,product_id,product_sum
+    </sql>
+    <!--  List<HfAdmin> findAllAdmins();  查询所有管理员。 -->
+    <select id="findAllOrderItem" resultMap="HfOrderItemResultMap">
+        select  <include refid="Base_Column_List" />
+        from order_item
+        order by order_item_id desc
+    </select>
+
+    <select id="selectOrderItem" parameterType="com.collabor.Entity.HfOrderItem" resultMap="HfOrderItemResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_item
+        <where>
+            <if test="order_item_id!=null and order_item_id!=''">
+                order_item_id = #{order_item_id}
+            </if>
+            <if test="order_id!=null and order_id!=''">
+                and order_id = #{order_id}
+            </if>
+            <if test="product_id!=null and product_id!=''">
+                and product_id = #{product_id}
+            </if>
+            <if test="product_sum!=null and product_sum!=''">
+                and product_sum = #{product_sum}
+            </if>
+        </where>
+        order by order_item_id desc
+    </select>
+
+    <insert id="insertOrderItem" parameterType="com.collabor.Entity.HfOrderItem" useGeneratedKeys="true" keyProperty="order_item_id" keyColumn="order_item_id">
+        insert into order_item(order_id,product_id,product_sum)
+        values(#{order_id},#{product_id},#{product_sum})
+    </insert>
+</mapper>

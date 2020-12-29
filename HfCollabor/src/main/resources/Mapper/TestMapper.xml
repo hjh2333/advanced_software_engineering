@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.Dto.test">
+    <!--testDTO相关-->
+    <resultMap type="com.collabor.Entity.Dto.testDTO" id="testMap">
+        <result property="day_time" column="day_time"/>
+        <result property="num" column="num"/>
+    </resultMap>
+    <sql id="Test_Column_List">
+        day_time,num
+    </sql>
+    <select id="testFun" resultMap="testMap">
+        select date_format(create_time,'%Y-%m-%d') day_time,count(*) as num
+        from hf_collaboration_db.hf_order group by day_time
+    </select>
+
+</mapper>

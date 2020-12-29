@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.HfOrderDao">
+    <resultMap type="com.collabor.Entity.HfOrder" id="HfOrderResultMap">
+        <result property="order_id" column="order_id"/>  <!-- 主键 -->
+        <result property="admin_id" column="admin_id"/>    <!-- 管理员用户名 -->
+        <result property="status" column="status"/>  <!-- 管理员密码 -->
+        <result property="deadline" column="deadline"/>  <!-- 管理员密码 -->
+        <result property="create_time" column="create_time"/>  <!-- 管理员密码 -->
+        <result property="predict_time" column="predict_time"/>  <!-- 管理员密码 -->
+        <result property="complete_time" column="complete_time"/>  <!-- 管理员密码 -->
+    </resultMap>
+    <sql id="Base_Column_List">
+        order_id,admin_id,status,deadline,create_time,predict_time,complete_time
+    </sql>
+
+    <!--  List<HfAdmin> findAllAdmins();  查询所有管理员。 -->
+    <select id="findAllOrder" resultMap="HfOrderResultMap">
+        select  <include refid="Base_Column_List" />
+        from hf_order
+        order by order_id desc
+    </select>
+    
+    <select id="selectOrder" parameterType="com.collabor.Entity.HfOrder" resultMap="HfOrderResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from hf_order
+        <where>
+            <if test="order_id!=null and order_id!='' and order_id!=0">
+                order_id = #{order_id}
+            </if>
+            <if test="admin_id!=null and admin_id!=''">
+                and admin_id = #{admin_id}
+            </if>
+            <if test="status!=null and status!=''">
+                and status = #{status}
+            </if>
+            <if test="create_time!=null">
+                and datediff(create_time,#{create_time})>=0
+            </if>
+        </where>
+        order by order_id desc
+    </select>
+
+
+
+    <insert id="insertOrder" parameterType="com.collabor.Entity.HfOrder" useGeneratedKeys="true" keyProperty="order_id" keyColumn="order_id">
+        insert into hf_order(admin_id,create_time,deadline)
+        values(#{admin_id},#{create_time},#{deadline})
+    </insert>
+
+    <update id="updateOrder" parameterType="com.collabor.Entity.HfOrder">
+        update hf_order
+        set status=#{status}
+        where order_id=#{order_id}
+    </update>
+</mapper>

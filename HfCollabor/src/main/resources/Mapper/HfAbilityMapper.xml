@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collabor.Dao.HfAbilityDao">
+    <resultMap type="com.collabor.Entity.HfAbility" id="HfAbilityResultMap">
+        <result property="product_ability_id" column="product_ability_id"/>  <!-- 主键 -->
+        <result property="factory_id" column="factory_id"/>    <!-- 管理员用户名 -->
+        <result property="product_id" column="product_id"/>  <!-- 管理员密码 -->
+        <result property="ability_enable" column="ability_enable"/>  <!-- 管理员密码 -->
+        <result property="willingness" column="willingness"/>  <!-- 管理员密码 -->
+        <result property="stock" column="stock"/>  <!-- 管理员密码 -->
+        <result property="update_time" column="update_time"/>  <!-- 管理员密码 -->
+    </resultMap>
+    <sql id="Base_Column_List">
+        product_ability_id,factory_id,product_id,ability_enable,willingness,stock,update_time
+    </sql>
+    <!--  List<HfAdmin> findAllAdmins();  查询所有管理员。 -->
+    <select id="findAllAbility" resultMap="HfAbilityResultMap">
+        select  <include refid="Base_Column_List" />
+        from product_ability
+        order by product_ability_id desc
+    </select>
+
+    <select id="selectAbility" parameterType="com.collabor.Entity.HfAbility" resultMap="HfAbilityResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product_ability
+        <where>
+            <if test="product_ability_id!=null and product_ability_id!=''">
+                product_ability_id=#{product_ability_id}
+            </if>
+            <if test="factory_id!=null and factory_id!=''">
+                and factory_id = #{factory_id}
+            </if>
+            <if test="product_id!=null and product_id!=''">
+                and product_id = #{product_id}
+            </if>
+        </where>
+        order by product_ability_id desc
+    </select>
+
+    <insert id="insertAbility" parameterType="com.collabor.Entity.HfAbility">
+        insert into product_ability(factory_id,product_id)
+        values(#{factory_id},#{product_id})
+    </insert>
+
+    <update id="updateAbility" parameterType="com.collabor.Entity.HfAbility">
+        update product_ability
+        set willingness=#{willingness}
+        where product_ability_id=#{product_ability_id}
+    </update>
+</mapper>
